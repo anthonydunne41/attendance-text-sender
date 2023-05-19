@@ -1,7 +1,8 @@
 import csv
 import os
 from prettytable import PrettyTable
-from pushbullet import Pushbullet
+from pyairmore.request import AirmoreSession
+from pyairmore.services.messaging import MessagingService
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
@@ -20,15 +21,22 @@ def welcome_message():
     print("Select your .csv file")
     enter = input("Press enter to continue")
 
-def send_sms(phone_number, message):
-    pb = Pushbullet('o.dQ75BMOxjgber6nLxVC7RwxyRTHMBTbs')
+# def send_sms(phone_number, message):
+#     pb = Pushbullet('o.dQ75BMOxjgber6nLxVC7RwxyRTHMBTbs')
 
-    device = pb.devices[1]
-    push = pb.push_sms(device, phone_number, message)
-    if push.get('active', True):
-        print('SMS sent successfully.')
-    else:
-        print('Failed to send SMS.')
+#     device = pb.devices[1]
+#     push = pb.push_sms(device, phone_number, message)
+#     if push.get('active', True):
+#         print('SMS sent successfully.')
+#     else:
+#         print('Failed to send SMS.')
+
+def send_sms(phone_number, message):
+    session = AirmoreSession('10.19.241.17:2333')  # Replace 'your_device_ip_address' with the IP address of your mobile device
+    session.start()
+    service = MessagingService(session)
+    service.send_message(phone_number, message)
+    session.stop()
 
 def index_table(csvreader):
     first_row = next(csvreader)
